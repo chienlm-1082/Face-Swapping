@@ -12,10 +12,10 @@ def extract_index_nparray(nparray):
     return index
 
 
-img = cv2.imread("suzy.jpg")
+img = cv2.imread("data/messi.jpg")
 img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 mask = np.zeros_like(img_gray)
-img2 = cv2.imread("yoona.jpg")
+img2 = cv2.imread("data/ronaldo.jpg")
 img2_gray = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
 
 
@@ -36,8 +36,8 @@ for face in faces:
         x = landmarks.part(n).x
         y = landmarks.part(n).y
         landmarks_points.append((x, y))
-    for (x, y) in landmarks_points:
-        cv2.circle(img, (x, y), 5, (0, 0, 255), -1)
+    # for (x, y) in landmarks_points:
+    #     cv2.circle(img, (x, y), 5, (0, 0, 255), -1)
 
 
     points = np.array(landmarks_points, np.int32)
@@ -45,21 +45,21 @@ for face in faces:
     convexhull = cv2.convexHull(points)
     print(len(convexhull))
     # cv2.polylines(img, [convexhull], True, (255, 0, 0), 3)
-    cv2.imwrite("convexhull.png", img)
+    # cv2.imwrite("convexhull.png", img)
     cv2.fillConvexPoly(mask, convexhull, 255)
-    cv2.imwrite("mask49.png", mask)
+    # cv2.imwrite("mask49.png", mask)
 
     face_image_1 = cv2.bitwise_and(img, img, mask=mask)
 
     # Delaunay triangulation
     rect = cv2.boundingRect(convexhull)
-    print("rect: ", rect)
+    # print("rect: ", rect)
     subdiv = cv2.Subdiv2D(rect)
     subdiv.insert(landmarks_points)
     triangles = subdiv.getTriangleList()
     triangles = np.array(triangles, dtype=np.int32)
-    print("len tritangles: ", len(triangles) )
-    print(triangles[0])
+    # print("len tritangles: ", len(triangles) )
+    # print(triangles[0])
 
     indexes_triangles = []
     for t in triangles:
@@ -126,14 +126,14 @@ for triangle_index in indexes_triangles:
     cv2.line(lines_space_mask, tr1_pt2, tr1_pt3, 255)
     cv2.line(lines_space_mask, tr1_pt1, tr1_pt3, 255)
 
-    cv2.line(img, tr1_pt1, tr1_pt2, (0, 255, 0), thickness=1)
-    cv2.line(img, tr1_pt2, tr1_pt3, (0, 255, 0), thickness=1)
-    cv2.line(img, tr1_pt1, tr1_pt3, (0, 255, 0), thickness=1)
+    # cv2.line(img, tr1_pt1, tr1_pt2, (0, 255, 0), thickness=1)
+    # cv2.line(img, tr1_pt2, tr1_pt3, (0, 255, 0), thickness=1)
+    # cv2.line(img, tr1_pt1, tr1_pt3, (0, 255, 0), thickness=1)
 
     lines_space = cv2.bitwise_and(img, img, mask=lines_space_mask)
-    for (x, y) in landmarks_points:
-        cv2.circle(img, (x, y), 5, (0, 0, 255), -1)
-    cv2.imwrite("line128.png", img)
+    # for (x, y) in landmarks_points:
+    #     cv2.circle(img, (x, y), 5, (0, 0, 255), -1)
+    # cv2.imwrite("line128.png", img)
 
     # Triangulation of second face
     tr2_pt1 = landmarks_points2[triangle_index[0]]
@@ -186,7 +186,7 @@ center_face2 = (int((x + x + w) / 2), int((y + y + h) / 2))
 seamlessclone = cv2.seamlessClone(result, img2, img2_head_mask, center_face2, cv2.NORMAL_CLONE)
 
 
-
+cv2.imwrite("results.png", seamlessclone)
 seamlessclone = imutils.resize(seamlessclone, width=300)
 cv2.imshow("seamlessclone", seamlessclone)
 cv2.waitKey(0)
